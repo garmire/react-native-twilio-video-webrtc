@@ -18,8 +18,14 @@ class TwilioVideoLocalView extends Component {
     enabled: PropTypes.bool.isRequired
   }
 
+  componentWillUnmount() {
+    this.refs.localVideoView.setNativeProps({
+      enabled: false,
+    });
+  }
+
   render () {
-    return <RCTTWLocalVideoView {...this.props}>{this.props.children}</RCTTWLocalVideoView>
+    return <RCTTWLocalVideoView ref='localVideoView' {...this.props}>{this.props.children}</RCTTWLocalVideoView>
   }
 }
 

@@ -49,6 +49,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.ArrayList;
 
 import static com.twiliorn.library.CustomTwilioVideoView.Events.ON_AUDIO_CHANGED;
 import static com.twiliorn.library.CustomTwilioVideoView.Events.ON_CAMERA_SWITCHED;
@@ -94,7 +95,7 @@ public class CustomTwilioVideoView extends View implements LifecycleEventListene
     /*
      * A Room represents communication between the client and one or more participants.
      */
-    private Room room;
+    private static Room room;
     private String roomName = null;
     private String accessToken = null;
     private LocalParticipant localParticipant;
@@ -103,15 +104,12 @@ public class CustomTwilioVideoView extends View implements LifecycleEventListene
      * A VideoView receives frames from a local or remote video track and renders them
      * to an associated view.
      */
-    private static VideoView primaryVideoView;
     private static VideoView thumbnailVideoView;
-    private static VideoTrack  participantVideoTrack;
     private static LocalVideoTrack localVideoTrack;
 
     private static CameraCapturer  cameraCapturer;
     private LocalAudioTrack localAudioTrack;
     private AudioManager    audioManager;
-    private String          participantIdentity;
     private int             previousAudioMode;
     private boolean         disconnectedFromOnDestroy;
     private IntentFilter intentFilter;
@@ -404,7 +402,7 @@ public class CustomTwilioVideoView extends View implements LifecycleEventListene
                 //noinspection LoopStatementThatDoesntLoop
                 for (Participant participant : participants) {
                     addParticipant(participant);
-                    break;
+                    //break;
                 }
             }
 
@@ -422,7 +420,6 @@ public class CustomTwilioVideoView extends View implements LifecycleEventListene
                 accessToken = null;
 
                 WritableMap event = new WritableNativeMap();
-                event.putString("participant", participantIdentity);
                 pushEvent(CustomTwilioVideoView.this, ON_DISCONNECTED, event);
 
                 CustomTwilioVideoView.this.room = null;
@@ -456,9 +453,8 @@ public class CustomTwilioVideoView extends View implements LifecycleEventListene
      * Called when participant joins the room
      */
     private void addParticipant(Participant participant) {
-        participantIdentity = participant.getIdentity();
         WritableMap event = new WritableNativeMap();
-        event.putString("participant", participantIdentity);
+        event.putString("participant", participant.getIdentity());
         pushEvent(this, ON_PARTICIPANT_CONNECTED, event);
 
         /*
@@ -482,11 +478,8 @@ public class CustomTwilioVideoView extends View implements LifecycleEventListene
      */
     private void removeParticipant(Participant participant) {
         WritableMap event = new WritableNativeMap();
-        event.putString("participant", participantIdentity);
+        event.putString("participant", participant.getIdentity());
         pushEvent(this, ON_PARTICIPANT_DISCONNECTED, event);
-        if (!participant.getIdentity().equals(participantIdentity)) {
-            return;
-        }
 
         /*
          * Remove participant renderer
@@ -561,22 +554,11 @@ public class CustomTwilioVideoView extends View implements LifecycleEventListene
     }
 
     private void addParticipantVideo(Participant participant, VideoTrack videoTrack) {
-        if (participantVideoTrack != null && primaryVideoView != null) {
-            participantVideoTrack.removeRenderer(primaryVideoView);
-        }
-        participantVideoTrack = videoTrack;
-        if (primaryVideoView != null) {
-            participantVideoTrack.addRenderer(primaryVideoView);
-        }
         WritableMap event = this.buildParticipantVideoEvent(participant, videoTrack);
         pushEvent(CustomTwilioVideoView.this, ON_PARTICIPANT_ADDED_VIDEO_TRACK, event);
     }
 
     private void removeParticipantVideo(Participant participant, VideoTrack videoTrack) {
-        if (participantVideoTrack != null && primaryVideoView != null) {
-            participantVideoTrack.removeRenderer(primaryVideoView);
-        }
-        participantVideoTrack = null;
         WritableMap event = this.buildParticipantVideoEvent(participant, videoTrack);
         pushEvent(CustomTwilioVideoView.this, ON_PARTICIPANT_REMOVED_VIDEO_TRACK, event);
     }
@@ -586,11 +568,11 @@ public class CustomTwilioVideoView extends View implements LifecycleEventListene
         eventEmitter.receiveEvent(view.getId(), name, data);
     }
 
-    public static void registerPrimaryVideoView(VideoView v) {
-        primaryVideoView = v;
-        if (participantVideoTrack != null) {
-            participantVideoTrack.addRenderer(v);
-        }
+    public static void removeThumbnailVideoView(VideoView v) {
+      thumbnailVideoView = null;
+      if (localVideoTrack != null) {
+          localVideoTrack.removeRenderer(v);
+      }
     }
 
     public static void registerThumbnailVideoView(VideoView v) {
@@ -598,6 +580,27 @@ public class CustomTwilioVideoView extends View implements LifecycleEventListene
         if (localVideoTrack != null) {
             localVideoTrack.addRenderer(v);
         }
-        setThumbnailMirror();
+    }
+
+    public static void removeRemoteVideoView(VideoView v) {
+        if (room != null) {
+            for (Participant participant : room.getParticipants()) {
+                for (VideoTrack track : participant.getVideoTracks()) {
+                    track.removeRenderer(v);
+                }
+            }
+        }
+    }
+
+    public static void registerRemoteVideoView(VideoView v, String participantId) {
+        for (Participant participant : room.getParticipants()) {
+            if (participant.getIdentity().equals(participantId)) {
+              for (VideoTrack track : participant.getVideoTracks()) {
+                  track.addRenderer(v);
+                  break;
+              }
+              break;
+            }
+        }
     }
 }

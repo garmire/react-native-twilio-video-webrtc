@@ -15,6 +15,7 @@
 
 @property (strong) NSString *participantIdentity;
 @property (strong) NSString *videoTrackId;
+@property (nonatomic) BOOL enabled;
 
 @end
 
@@ -34,6 +35,7 @@
   RCTTWVideoTrackIdentifier *trackIdentifier = [[RCTTWVideoTrackIdentifier alloc] init];
   trackIdentifier.participantIdentity = json[@"participantIdentity"];
   trackIdentifier.videoTrackId = json[@"videoTrackId"];
+  trackIdentifier.enabled = [RCTConvert BOOL:json[@"enabled"]];
 
   return trackIdentifier;
 }
@@ -60,7 +62,11 @@ RCT_CUSTOM_VIEW_PROPERTY(trackIdentifier, RCTTWVideoTrackIdentifier, TVIVideoVie
     RCTTWVideoModule *videoModule = [self.bridge moduleForName:@"TWVideoModule"];
     RCTTWVideoTrackIdentifier *id = [RCTConvert RCTTWVideoTrackIdentifier:json];
 
-    [videoModule addParticipantView:view.subviews[0] identity:id.participantIdentity trackId:id.videoTrackId];
+    if (!id.enabled) {
+      [videoModule removeParticipantView:view.subviews[0]];
+    } else if (id.participantIdentity != nil) {
+      [videoModule addParticipantView:view.subviews[0] identity:id.participantIdentity];
+    }
   }
 }
 

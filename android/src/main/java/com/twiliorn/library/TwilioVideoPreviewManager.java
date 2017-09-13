@@ -31,4 +31,14 @@ public class TwilioVideoPreviewManager extends SimpleViewManager<TwilioVideoPrev
     protected TwilioVideoPreview createViewInstance(ThemedReactContext reactContext) {
         return new TwilioVideoPreview(reactContext);
     }
+
+    @ReactProp(name = "enabled")
+    public void setEnabled(TwilioVideoPreview view, Boolean enabled) {
+        view.setEnabled(enabled);
+    }
+
+    @ReactProp(name = "isTop")
+    public void setIsTop(TwilioVideoPreview view, Boolean isTop) {
+        view.setIsTop(isTop);
+    }
 }

@@ -24,7 +24,7 @@ static NSString* participantEnabledTrack      = @"participantEnabledTrack";
 static NSString* participantDisabledTrack     = @"participantDisabledTrack";
 
 static NSString* cameraDidStart               = @"cameraDidStart";
-static NSString* cameraWasInterrupted        = @"cameraWasInterrupted";
+static NSString* cameraWasInterrupted         = @"cameraWasInterrupted";
 static NSString* cameraDidStopRunning         = @"cameraDidStopRunning";
 
 
@@ -80,11 +80,15 @@ RCT_EXPORT_MODULE();
   [self.localVideoTrack removeRenderer:view];
 }
 
-- (void)removeParticipantView:(TVIVideoView *)view identity:(NSString *)identity  trackId:(NSString *)trackId {
-  // TODO: Implement this nicely
+- (void)removeParticipantView:(TVIVideoView *)view {
+  for (TVIParticipant *participant in self.room.participants) {
+    for (TVIVideoTrack *videoTrack in participant.videoTracks) {
+      [videoTrack removeRenderer:view];
+    }
+  }
 }
 
-- (void)addParticipantView:(TVIVideoView *)view identity:(NSString *)identity  trackId:(NSString *)trackId {
+- (void)addParticipantView:(TVIVideoView *)view identity:(NSString *)identity {
   // Lookup for the participant in the room
   for (TVIParticipant *participant in self.room.participants) {
     if ([participant.identity isEqualToString:identity]) {
