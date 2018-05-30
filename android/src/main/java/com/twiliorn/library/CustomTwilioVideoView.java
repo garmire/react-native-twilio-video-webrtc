@@ -187,7 +187,7 @@ public class CustomTwilioVideoView extends View implements LifecycleEventListene
             /*
             * If the local video track was released when the app was put in the background, recreate.
             */
-            if (cameraCapturer != null && localVideoTrack == null) {
+            if (cameraCapturer != null && localVideoTrack == null && cameraCapturer.getSupportedFormats().size() > 0) {
                 localVideoTrack = LocalVideoTrack.create(getContext(), true, cameraCapturer);
             }
 
