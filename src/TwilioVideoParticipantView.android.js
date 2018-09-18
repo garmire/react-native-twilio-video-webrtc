@@ -5,51 +5,53 @@
  *   Jonathan Chang <slycoder@gmail.com>
  */
 
-import {
-  requireNativeComponent,
-  View
-} from 'react-native'
-import React from 'react'
+import { requireNativeComponent } from 'react-native'
 import PropTypes from 'prop-types'
-
-const propTypes = {
-  ...View.propTypes,
-  trackIdentifier: PropTypes.shape({
-    /**
-     * The participant identifier.
-     */
-    participantIdentity: PropTypes.string.isRequired,
-    /**
-     * The participant's video track you want to render in the view.
-     */
-    videoTrackId: PropTypes.string.isRequired,
-    /**
-     * Indicate if video feed is enabled.
-     */
-    enabled: PropTypes.bool.isRequired,
-  }),
-  isTop: PropTypes.bool,
-}
+import React from 'react'
 
 class TwilioRemotePreview extends React.Component {
+  static propTypes = {
+    trackIdentifier: PropTypes.shape({
+      /**
+       * The participant identifier.
+       */
+      participantSid: PropTypes.string.isRequired,
+      /**
+       * The participant's video track you want to render in the view.
+       */
+      videoTrackSid: PropTypes.string.isRequired,
+      /**
+       * Indicate if video feed is enabled.
+       */
+      enabled: PropTypes.bool.isRequired,
+    }),
+    isTop: PropTypes.bool,
+    trackSid: PropTypes.string,
+    renderToHardwareTextureAndroid: PropTypes.string,
+    onLayout: PropTypes.string,
+    accessibilityLiveRegion: PropTypes.string,
+    accessibilityComponentType: PropTypes.string,
+    importantForAccessibility: PropTypes.string,
+    accessibilityLabel: PropTypes.string,
+    nativeID: PropTypes.string,
+    testID: PropTypes.string
+  }
+
   componentWillUnmount() {
     this.refs.remoteVideoView.setNativeProps({
       trackIdentifier: {
-        participantIdentity: this.props.trackIdentifier.participantIdentity,
-        videoTrackId: this.props.trackIdentifier.videoTrackId,
+        participantSid: this.props.trackIdentifier.participantSid,
+        videoTrackSid: this.props.trackIdentifier.videoTrackSid,
         enabled: false,
       }
     });
   }
 
   render () {
-    return (
-      <NativeTwilioRemotePreview ref='remoteVideoView' {...this.props} />
-    )
+    const { trackIdentifier } = this.props
+    return <NativeTwilioRemotePreview ref='remoteVideoView' trackSid={trackIdentifier && trackIdentifier.videoTrackSid} {...this.props} />
   }
 }
-
-TwilioRemotePreview.propTypes = propTypes
 
 const NativeTwilioRemotePreview = requireNativeComponent(
   'RNTwilioRemotePreview',

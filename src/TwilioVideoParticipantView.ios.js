@@ -14,13 +14,13 @@ class TwilioVideoParticipantView extends Component {
   static propTypes = {
     trackIdentifier: PropTypes.shape({
       /**
-       * The participant identifier.
+       * The participant sid.
        */
-      participantIdentity: PropTypes.string.isRequired,
+      participantSid: PropTypes.string.isRequired,
       /**
-       * The participant's video track you want to render in the view.
+       * The participant's video track sid you want to render in the view.
        */
-      videoTrackId: PropTypes.string.isRequired,
+      videoTrackSid: PropTypes.string.isRequired,
       /**
        * Indicate if video feed is enabled.
        */
@@ -31,8 +31,8 @@ class TwilioVideoParticipantView extends Component {
   componentWillUnmount() {
     this.refs.remoteVideoView.setNativeProps({
       trackIdentifier: {
-        participantIdentity: this.props.trackIdentifier.participantIdentity,
-        videoTrackId: this.props.trackIdentifier.videoTrackId,
+        participantSid: this.props.trackIdentifier.participantSid,
+        videoTrackSid: this.props.trackIdentifier.videoTrackSid,
         enabled: false,
       }
     });

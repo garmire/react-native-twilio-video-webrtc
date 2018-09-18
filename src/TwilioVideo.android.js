@@ -71,7 +71,35 @@ const propTypes = {
   /**
    * Callback that is called when a participant exits a room.
    */
-  onRoomParticipantDidDisconnect: PropTypes.func
+  onRoomParticipantDidDisconnect: PropTypes.func,
+  /**
+    * Called when a video track has been enabled.
+    *
+    * @param {{participant, track}}
+    */
+  onParticipantEnabledVideoTrack: PropTypes.func,
+  /**
+   * Called when a video track has been disabled.
+   *
+   * @param {{participant, track}}
+   */
+  onParticipantDisabledVideoTrack: PropTypes.func,
+  /**
+    * Called when an audio track has been enabled.
+    *
+    * @param {{participant, track}}
+    */
+  onParticipantEnabledAudioTrack: PropTypes.func,
+  /**
+   * Called when an audio track has been disabled.
+   *
+   * @param {{participant, track}}
+   */
+  onParticipantDisabledAudioTrack: PropTypes.func,
+  /**
+   * Callback that is called when stats are received (after calling getStats)
+   */
+  onStatsReceived: PropTypes.func
 }
 
 const nativeEvents = {
@@ -79,7 +107,9 @@ const nativeEvents = {
   disconnect: 2,
   switchCamera: 3,
   toggleVideo: 4,
-  toggleSound: 5
+  toggleSound: 5,
+  getStats: 6,
+  disableOpenSLES: 7
 }
 
 class CustomTwilioVideoView extends Component {
@@ -97,10 +127,20 @@ class CustomTwilioVideoView extends Component {
 
   setLocalVideoEnabled (enabled) {
     this.runCommand(nativeEvents.toggleVideo, [enabled])
+    return Promise.resolve(enabled)
   }
 
   setLocalAudioEnabled (enabled) {
     this.runCommand(nativeEvents.toggleSound, [enabled])
+    return Promise.resolve(enabled)
+  }
+
+  getStats () {
+    this.runCommand(nativeEvents.getStats, [])
+  }
+
+  disableOpenSLES () {
+    this.runCommand(nativeEvents.disableOpenSLES, [])
   }
 
   runCommand (event, args) {
@@ -128,7 +168,12 @@ class CustomTwilioVideoView extends Component {
       'onParticipantAddedVideoTrack',
       'onParticipantRemovedVideoTrack',
       'onRoomParticipantDidConnect',
-      'onRoomParticipantDidDisconnect'
+      'onRoomParticipantDidDisconnect',
+      'onParticipantEnabledVideoTrack',
+      'onParticipantDisabledVideoTrack',
+      'onParticipantEnabledAudioTrack',
+      'onParticipantDisabledAudioTrack',
+      'onStatsReceived'
     ].reduce((wrappedEvents, eventName) => {
       if (this.props[eventName]) {
         return {

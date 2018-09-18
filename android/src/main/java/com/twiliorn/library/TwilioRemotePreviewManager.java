@@ -1,11 +1,13 @@
 /**
  * Component for Twilio Video participant views.
- *
+ * <p>
  * Authors:
- *   Jonathan Chang <slycoder@gmail.com>
+ * Jonathan Chang <slycoder@gmail.com>
  */
 
 package com.twiliorn.library;
+
+import android.util.Log;
 
 import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;

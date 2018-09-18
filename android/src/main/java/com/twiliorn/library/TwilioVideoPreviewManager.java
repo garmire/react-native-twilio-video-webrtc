@@ -1,16 +1,12 @@
 /**
  * Component for Twilio Video local views.
- *
+ * <p>
  * Authors:
- *   Jonathan Chang <slycoder@gmail.com>
+ * Jonathan Chang <slycoder@gmail.com>
  */
 
 package com.twiliorn.library;
 
-import android.support.annotation.Nullable;
-
-import com.facebook.react.bridge.ReadableArray;
-import com.facebook.react.common.MapBuilder;
 import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.annotations.ReactProp;
