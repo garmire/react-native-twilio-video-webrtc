@@ -17,7 +17,7 @@ import android.media.AudioFocusRequest;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.Handler;
-import android.support.annotation.StringDef;
+import androidx.annotation.StringDef;
 import android.util.Log;
 import android.view.View;
 
@@ -65,6 +65,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Collections;
 import java.util.List;
+import java.util.ArrayList;
 
 import static com.twiliorn.library.CustomTwilioVideoView.Events.ON_AUDIO_CHANGED;
 import static com.twiliorn.library.CustomTwilioVideoView.Events.ON_CAMERA_SWITCHED;
@@ -236,7 +237,7 @@ public class CustomTwilioVideoView extends View implements LifecycleEventListene
             /*
             * If the local video track was released when the app was put in the background, recreate.
             */
-            if (cameraCapturer != null && localVideoTrack == null) {
+            if (cameraCapturer != null && localVideoTrack == null && cameraCapturer.getSupportedFormats().size() > 0) {
                 localVideoTrack = LocalVideoTrack.create(getContext(), true, cameraCapturer, buildVideoConstraints());
             }
 
@@ -698,8 +699,6 @@ public class CustomTwilioVideoView extends View implements LifecycleEventListene
         event.putString("roomSid", room.getSid());
         event.putMap("participant", buildParticipant(participant));
         pushEvent(this, ON_PARTICIPANT_DISCONNECTED, event);
-        //something about this breaking.
-        //participant.setListener(null);
     }
 
 
@@ -851,37 +850,78 @@ public class CustomTwilioVideoView extends View implements LifecycleEventListene
         eventEmitter.receiveEvent(view.getId(), name, data);
     }
 
-    public static void registerPrimaryVideoView(VideoView v, String trackSid) {
-        Log.i("CustomTwilioVideoView", "register Primary Video");
-        Log.i("CustomTwilioVideoView", trackSid);
+    public static void registerThumbnailVideoView(VideoView v) {
+        thumbnailVideoView = v;
+        if (localVideoTrack != null) {
+            localVideoTrack.addRenderer(v);
+        }
+    }
 
+    public static void removeThumbnailVideoView(VideoView v) {
+      thumbnailVideoView = null;
+      if (localVideoTrack != null) {
+          localVideoTrack.removeRenderer(v);
+      }
+    }
+
+    public static void registerRemoteVideoView(VideoView v, String participantSid, String videoTrackSid) {
         if (room != null) {
-            Log.i("CustomTwilioVideoView", "Found Participant tracks");
-
             for (RemoteParticipant participant : room.getRemoteParticipants()) {
-                for (RemoteVideoTrackPublication publication : participant.getRemoteVideoTracks()) {
-                    Log.i("CustomTwilioVideoView", publication.getTrackSid());
-                    RemoteVideoTrack track = publication.getRemoteVideoTrack();
-                    if (track == null) {
-                        Log.i("CustomTwilioVideoView", "SKIPPING UNSUBSCRIBED TRACK");
-                        continue;
-                    }
-                    if (publication.getTrackSid().equals(trackSid)) {
-                        Log.i("CustomTwilioVideoView", "FOUND THE MATCHING TRACK");
-                        track.addRenderer(v);
-                    } else {
-                        track.removeRenderer(v);
+                if (participant.getSid().equals(participantSid)) {
+                    for (RemoteVideoTrackPublication publication : participant.getRemoteVideoTracks()) {
+                        if (publication.getTrackSid().equals(videoTrackSid)) {
+                            RemoteVideoTrack track = publication.getRemoteVideoTrack();
+                            if (track != null) {
+                                track.addRenderer(v);
+                            }
+                        }
                     }
                 }
             }
         }
     }
 
-    public static void registerThumbnailVideoView(VideoView v) {
-        thumbnailVideoView = v;
-        if (localVideoTrack != null) {
-            localVideoTrack.addRenderer(v);
+    public static void removeRemoteVideoView(VideoView v, String participantSid, String videoTrackSid) {
+        if (room != null) {
+            for (RemoteParticipant participant : room.getRemoteParticipants()) {
+                if (participant.getSid().equals(participantSid)) {
+                    for (RemoteVideoTrackPublication publication : participant.getRemoteVideoTracks()) {
+                        if (publication.getTrackSid().equals(videoTrackSid)) {
+                            RemoteVideoTrack track = publication.getRemoteVideoTrack();
+                            if (track != null) {
+                                track.removeRenderer(v);
+                            }
+                        }
+                    }
+                }
+            }
         }
-        setThumbnailMirror();
     }
+
+
+    // public static void registerPrimaryVideoView(VideoView v, String trackSid) {
+    //     Log.i("CustomTwilioVideoView", "register Primary Video");
+    //     Log.i("CustomTwilioVideoView", trackSid);
+    //
+    //     if (room != null) {
+    //         Log.i("CustomTwilioVideoView", "Found Participant tracks");
+    //
+    //         for (RemoteParticipant participant : room.getRemoteParticipants()) {
+    //             for (RemoteVideoTrackPublication publication : participant.getRemoteVideoTracks()) {
+    //                 Log.i("CustomTwilioVideoView", publication.getTrackSid());
+    //                 RemoteVideoTrack track = publication.getRemoteVideoTrack();
+    //                 if (track == null) {
+    //                     Log.i("CustomTwilioVideoView", "SKIPPING UNSUBSCRIBED TRACK");
+    //                     continue;
+    //                 }
+    //                 if (publication.getTrackSid().equals(trackSid)) {
+    //                     Log.i("CustomTwilioVideoView", "FOUND THE MATCHING TRACK");
+    //                     track.addRenderer(v);
+    //                 } else {
+    //                     track.removeRenderer(v);
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
 }

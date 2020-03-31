@@ -10,15 +10,30 @@ import {
   View
 } from 'react-native'
 import React from 'react'
+import PropTypes from 'prop-types'
 
 const propTypes = {
-  ...View.propTypes
+  ...View.propTypes,
+  /**
+   * Indicate if video feed is enabled.
+   */
+  enabled: PropTypes.bool.isRequired,
+  isTop: PropTypes.bool,
 }
 
 class TwilioVideoPreview extends React.Component {
+
+  localVideoView = React.createRef();
+
+  componentWillUnmount() {
+    this.localVideoView.current.setNativeProps({
+      enabled: false,
+    });
+  }
+
   render () {
     return (
-      <NativeTwilioVideoPreview {...this.props} />
+      <NativeTwilioVideoPreview ref={this.localVideoView} {...this.props} />
     )
   }
 }

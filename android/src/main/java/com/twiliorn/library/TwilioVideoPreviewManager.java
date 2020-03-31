@@ -7,10 +7,8 @@
 
 package com.twiliorn.library;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
-import com.facebook.react.bridge.ReadableArray;
-import com.facebook.react.common.MapBuilder;
 import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.annotations.ReactProp;
@@ -30,7 +28,7 @@ public class TwilioVideoPreviewManager extends SimpleViewManager<TwilioVideoPrev
 
     @ReactProp(name = "scaleType")
     public void setScaleType(TwilioVideoPreview view, @Nullable String scaleType) {
-      if (scaleType.equals("fit")) {
+      if (scaleType != null && scaleType.equals("fit")) {
         view.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FIT);
       } else {
         view.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FILL);
@@ -40,5 +38,15 @@ public class TwilioVideoPreviewManager extends SimpleViewManager<TwilioVideoPrev
     @Override
     protected TwilioVideoPreview createViewInstance(ThemedReactContext reactContext) {
         return new TwilioVideoPreview(reactContext);
+    }
+
+    @ReactProp(name = "enabled")
+    public void setEnabled(TwilioVideoPreview view, Boolean enabled) {
+        view.setEnabled(enabled);
+    }
+
+    @ReactProp(name = "isTop")
+    public void setIsTop(TwilioVideoPreview view, Boolean isTop) {
+        view.setIsTop(isTop);
     }
 }

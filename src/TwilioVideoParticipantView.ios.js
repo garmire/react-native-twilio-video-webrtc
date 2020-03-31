@@ -20,13 +20,29 @@ class TwilioVideoParticipantView extends Component {
       /**
        * The participant's video track sid you want to render in the view.
        */
-      videoTrackSid: PropTypes.string.isRequired
+      videoTrackSid: PropTypes.string.isRequired,
+      /**
+       * Indicate if video feed is enabled.
+       */
+      enabled: PropTypes.bool.isRequired,
     })
+  }
+
+  remoteVideoView = React.createRef();
+
+  componentWillUnmount() {
+    this.remoteVideoView.current.setNativeProps({
+      trackIdentifier: {
+        participantSid: this.props.trackIdentifier.participantSid,
+        videoTrackSid: this.props.trackIdentifier.videoTrackSid,
+        enabled: false,
+      }
+    });
   }
 
   render () {
     let scalesType = this.props.scaleType === 'fit' ? 1 : 2
-    return <RCTTWRemoteVideoView scalesType={scalesType} {...this.props}>{this.props.children}</RCTTWRemoteVideoView>
+    return <RCTTWRemoteVideoView ref={this.remoteVideoView} scalesType={scalesType} {...this.props}>{this.props.children}</RCTTWRemoteVideoView>
   }
 }
 

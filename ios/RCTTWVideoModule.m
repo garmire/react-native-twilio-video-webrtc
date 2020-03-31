@@ -86,7 +86,15 @@ RCT_EXPORT_MODULE();
 }
 
 - (void)removeParticipantView:(TVIVideoView *)view sid:(NSString *)sid trackSid:(NSString *)trackSid {
-  // TODO: Implement this nicely
+  // Lookup for the participant in the room
+  TVIRemoteParticipant *participant = [self.room getRemoteParticipantWithSid:sid];
+  if (participant) {
+     for (TVIRemoteVideoTrackPublication *publication in participant.remoteVideoTracks) {
+       if ([publication.trackSid isEqualToString:trackSid]) {
+         [publication.videoTrack removeRenderer:view];
+       }
+     }
+  }
 }
 
 - (void)addParticipantView:(TVIVideoView *)view sid:(NSString *)sid trackSid:(NSString *)trackSid {

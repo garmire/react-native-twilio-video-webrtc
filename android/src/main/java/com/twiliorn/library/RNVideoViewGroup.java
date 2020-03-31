@@ -22,7 +22,7 @@ public class RNVideoViewGroup extends ViewGroup {
     private int videoHeight = 0;
     private final Object layoutSync = new Object();
     private RendererCommon.ScalingType scalingType = RendererCommon.ScalingType.SCALE_ASPECT_FILL;
-
+    private Boolean isTop = false;
 
     public RNVideoViewGroup(Context context) {
         super(context);
@@ -55,6 +55,13 @@ public class RNVideoViewGroup extends ViewGroup {
 
     public void setScalingType(RendererCommon.ScalingType scalingType) {
         this.scalingType = scalingType;
+    }
+
+    public void setIsTop(Boolean isTop) {
+        this.isTop = isTop;
+        if (this.isTop) {
+            surfaceViewRenderer.applyZOrder(true);
+        }
     }
 
     @Override

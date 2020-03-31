@@ -18,9 +18,17 @@ class TwilioVideoLocalView extends Component {
     enabled: PropTypes.bool.isRequired
   }
 
+  localVideoView = React.createRef();
+
+  componentWillUnmount() {
+    this.localVideoView.current.setNativeProps({
+      enabled: false,
+    });
+  }
+
   render () {
     let scalesType = this.props.scaleType === 'fit' ? 1 : 2
-    return <RCTTWLocalVideoView scalesType={scalesType} {...this.props}>{this.props.children}</RCTTWLocalVideoView>
+    return <RCTTWLocalVideoView ref={this.localVideoView} scalesType={scalesType} {...this.props}>{this.props.children}</RCTTWLocalVideoView>
   }
 }
 
