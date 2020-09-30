@@ -17,6 +17,7 @@ import android.media.AudioFocusRequest;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.Handler;
+import androidx.annotation.NonNull;
 import androidx.annotation.StringDef;
 import android.util.Log;
 import android.view.View;
@@ -78,6 +79,7 @@ import static com.twiliorn.library.CustomTwilioVideoView.Events.ON_PARTICIPANT_C
 import static com.twiliorn.library.CustomTwilioVideoView.Events.ON_PARTICIPANT_DISABLED_AUDIO_TRACK;
 import static com.twiliorn.library.CustomTwilioVideoView.Events.ON_PARTICIPANT_DISABLED_VIDEO_TRACK;
 import static com.twiliorn.library.CustomTwilioVideoView.Events.ON_PARTICIPANT_DISCONNECTED;
+import static com.twiliorn.library.CustomTwilioVideoView.Events.ON_DOMINANT_SPEAKER_CHANGED;
 import static com.twiliorn.library.CustomTwilioVideoView.Events.ON_PARTICIPANT_ENABLED_AUDIO_TRACK;
 import static com.twiliorn.library.CustomTwilioVideoView.Events.ON_PARTICIPANT_ENABLED_VIDEO_TRACK;
 import static com.twiliorn.library.CustomTwilioVideoView.Events.ON_PARTICIPANT_REMOVED_AUDIO_TRACK;
@@ -97,6 +99,7 @@ public class CustomTwilioVideoView extends View implements LifecycleEventListene
             Events.ON_DISCONNECTED,
             Events.ON_PARTICIPANT_CONNECTED,
             Events.ON_PARTICIPANT_DISCONNECTED,
+            Events.ON_DOMINANT_SPEAKER_CHANGED,
             Events.ON_PARTICIPANT_ADDED_VIDEO_TRACK,
             Events.ON_PARTICIPANT_REMOVED_VIDEO_TRACK,
             Events.ON_PARTICIPANT_ADDED_AUDIO_TRACK,
@@ -115,6 +118,7 @@ public class CustomTwilioVideoView extends View implements LifecycleEventListene
         String ON_DISCONNECTED = "onRoomDidDisconnect";
         String ON_PARTICIPANT_CONNECTED = "onRoomParticipantDidConnect";
         String ON_PARTICIPANT_DISCONNECTED = "onRoomParticipantDidDisconnect";
+        String ON_DOMINANT_SPEAKER_CHANGED = "onRoomDominantSpeakerDidChange";
         String ON_PARTICIPANT_ADDED_VIDEO_TRACK = "onParticipantAddedVideoTrack";
         String ON_PARTICIPANT_REMOVED_VIDEO_TRACK = "onParticipantRemovedVideoTrack";
         String ON_PARTICIPANT_ADDED_AUDIO_TRACK = "onParticipantAddedAudioTrack";
@@ -346,6 +350,8 @@ public class CustomTwilioVideoView extends View implements LifecycleEventListene
         if (localVideoTrack != null) {
             connectOptionsBuilder.videoTracks(Collections.singletonList(localVideoTrack));
         }
+
+        connectOptionsBuilder.enableDominantSpeaker(true);
 
         room = Video.connect(getContext(), connectOptionsBuilder.build(), roomListener());
     }
@@ -621,6 +627,16 @@ public class CustomTwilioVideoView extends View implements LifecycleEventListene
             }
 
             @Override
+            public void onReconnecting(@NonNull Room room, @NonNull TwilioException twilioException) {
+
+            }
+
+            @Override
+            public void onReconnected(@NonNull Room room) {
+
+            }
+
+            @Override
             public void onDisconnected(Room room, TwilioException e) {
                 WritableMap event = new WritableNativeMap();
                 if (localParticipant != null) {
@@ -650,6 +666,11 @@ public class CustomTwilioVideoView extends View implements LifecycleEventListene
             @Override
             public void onParticipantDisconnected(Room room, RemoteParticipant participant) {
                 removeParticipant(room, participant);
+            }
+
+            @Override
+            public void onDominantSpeakerChanged(Room room, RemoteParticipant participant) {
+                changeDominantSpeaker(room, participant);
             }
 
             @Override
@@ -699,6 +720,17 @@ public class CustomTwilioVideoView extends View implements LifecycleEventListene
         event.putString("roomSid", room.getSid());
         event.putMap("participant", buildParticipant(participant));
         pushEvent(this, ON_PARTICIPANT_DISCONNECTED, event);
+    }
+
+    /*
+     * Called when dominant speaker changes
+     */
+    private void changeDominantSpeaker(Room room, RemoteParticipant participant) {
+        WritableMap event = new WritableNativeMap();
+        event.putString("roomName", room.getName());
+        event.putString("roomSid", room.getSid());
+        event.putMap("participant", participant != null ? buildParticipant(participant) : new WritableNativeMap());
+        pushEvent(this, ON_DOMINANT_SPEAKER_CHANGED, event);
     }
 
 

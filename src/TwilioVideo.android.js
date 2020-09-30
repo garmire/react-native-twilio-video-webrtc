@@ -87,6 +87,12 @@ const propTypes = {
    */
   onRoomParticipantDidDisconnect: PropTypes.func,
   /**
+   * Called when the dominant speaker has changed
+   *
+   * @param {{roomName, participant}}
+   */
+  onRoomDominantSpeakerDidChange: PropTypes.func,
+  /**
     * Called when a video track has been enabled.
     *
     * @param {{participant, track}}
@@ -193,6 +199,7 @@ class CustomTwilioVideoView extends Component {
       'onParticipantRemovedAudioTrack',
       'onRoomParticipantDidConnect',
       'onRoomParticipantDidDisconnect',
+      'onRoomDominantSpeakerDidChange',
       'onParticipantEnabledVideoTrack',
       'onParticipantDisabledVideoTrack',
       'onParticipantEnabledAudioTrack',

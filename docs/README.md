@@ -148,6 +148,16 @@ Called when a participant has disconnected
 
 @param {{roomName, participant}}
 
+#### onRoomDominantSpeakerDidChange
+
+```js
+onRoomDominantSpeakerDidChange: Function
+```
+
+Called when the dominant speaker has changed
+
+@param {{roomName, participant}}
+
 <br><br>
 
 ## TwilioVideoLocalView

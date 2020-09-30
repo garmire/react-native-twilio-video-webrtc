@@ -53,6 +53,12 @@ export default class extends Component {
      */
     onRoomParticipantDidDisconnect: PropTypes.func,
     /**
+     * Called when the dominant speaker has changed
+     *
+     * @param {{roomName, participant}}
+     */
+    onRoomDominantSpeakerDidChange: PropTypes.func,
+    /**
      * Called when a new video track has been added
      *
      * @param {{participant, track, enabled}}
@@ -247,6 +253,9 @@ export default class extends Component {
       }),
       this._eventEmitter.addListener('roomParticipantDidDisconnect', (data) => {
         if (this.props.onRoomParticipantDidDisconnect) { this.props.onRoomParticipantDidDisconnect(data) }
+      }),
+      this._eventEmitter.addListener('roomDominantSpeakerDidChange', (data) => {
+        if (this.props.onRoomDominantSpeakerDidChange) { this.props.onRoomDominantSpeakerDidChange(data) }
       }),
       this._eventEmitter.addListener('participantAddedVideoTrack', (data) => {
         if (this.props.onParticipantAddedVideoTrack) { this.props.onParticipantAddedVideoTrack(data) }

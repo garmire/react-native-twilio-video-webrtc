@@ -15,6 +15,7 @@ static NSString* roomDidDisconnect            = @"roomDidDisconnect";
 static NSString* roomDidFailToConnect         = @"roomDidFailToConnect";
 static NSString* roomParticipantDidConnect    = @"roomParticipantDidConnect";
 static NSString* roomParticipantDidDisconnect = @"roomParticipantDidDisconnect";
+static NSString* roomDominantSpeakerDidChange = @"roomDominantSpeakerDidChange";
 
 static NSString* participantAddedVideoTrack   = @"participantAddedVideoTrack";
 static NSString* participantRemovedVideoTrack = @"participantRemovedVideoTrack";
@@ -57,6 +58,7 @@ RCT_EXPORT_MODULE();
     roomDidFailToConnect,
     roomParticipantDidConnect,
     roomParticipantDidDisconnect,
+    roomDominantSpeakerDidChange,
     participantAddedVideoTrack,
     participantRemovedVideoTrack,
     participantAddedAudioTrack,
@@ -315,6 +317,7 @@ RCT_EXPORT_METHOD(connect:(NSString *)accessToken roomName:(NSString *)roomName)
     }
 
     builder.roomName = roomName;
+    builder.dominantSpeakerEnabled = true;
   }];
 
   self.room = [TwilioVideo connectWithOptions:connectOptions delegate:self];
@@ -396,6 +399,10 @@ RCT_EXPORT_METHOD(disconnect) {
 
 - (void)room:(TVIRoom *)room participantDidDisconnect:(TVIRemoteParticipant *)participant {
   [self sendEventWithName:roomParticipantDidDisconnect body:@{ @"roomName": room.name, @"roomSid": room.sid, @"participant": [participant toJSON] }];
+}
+
+- (void)room:(TVIRoom *)room dominantSpeakerDidChange:(nullable TVIRemoteParticipant *)participant {
+  [self sendEventWithName:roomDominantSpeakerDidChange body:@{ @"roomName": room.name, @"roomSid": room.sid, @"participant": participant ? [participant toJSON] : @"" }];
 }
 
 # pragma mark - TVIRemoteParticipantDelegate
