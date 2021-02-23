@@ -59,6 +59,7 @@ import com.twilio.video.Video;
 import com.twilio.video.VideoConstraints;
 import com.twilio.video.VideoDimensions;
 import com.twilio.video.VideoView;
+import com.twilio.video.Vp8Codec;
 
 import org.webrtc.voiceengine.WebRtcAudioManager;
 
@@ -352,6 +353,7 @@ public class CustomTwilioVideoView extends View implements LifecycleEventListene
         }
 
         connectOptionsBuilder.enableDominantSpeaker(true);
+        connectOptionsBuilder.preferVideoCodecs(Collections.singletonList(new Vp8Codec(true))); // Enable simulcast
 
         room = Video.connect(getContext(), connectOptionsBuilder.build(), roomListener());
     }

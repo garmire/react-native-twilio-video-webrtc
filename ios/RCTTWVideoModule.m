@@ -318,6 +318,7 @@ RCT_EXPORT_METHOD(connect:(NSString *)accessToken roomName:(NSString *)roomName)
 
     builder.roomName = roomName;
     builder.dominantSpeakerEnabled = true;
+    builder.preferredVideoCodecs = @[ [[TVIVp8Codec alloc] initWithSimulcast:true] ];
   }];
 
   self.room = [TwilioVideo connectWithOptions:connectOptions delegate:self];
