@@ -7,8 +7,9 @@
 
 package com.twiliorn.library;
 
-import android.content.Context;
 import android.util.Log;
+
+import com.facebook.react.uimanager.ThemedReactContext;
 
 
 import com.facebook.react.bridge.ReadableMap;
@@ -17,7 +18,8 @@ public class TwilioRemotePreview extends RNVideoViewGroup {
 
     private static final String TAG = "TwilioRemotePreview";
 
-    public TwilioRemotePreview(Context context) {
+
+    public TwilioRemotePreview(ThemedReactContext context, String trackSid) {
         super(context);
     }
 

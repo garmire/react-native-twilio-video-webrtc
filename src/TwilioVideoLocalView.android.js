@@ -5,20 +5,22 @@
  *   Jonathan Chang <slycoder@gmail.com>
  */
 
-import {
-  requireNativeComponent,
-  View
-} from 'react-native'
+import { requireNativeComponent, View } from 'react-native'
 import React from 'react'
 import PropTypes from 'prop-types'
 
 const propTypes = {
   ...View.propTypes,
   /**
-   * Indicate if video feed is enabled.
-   */
+  * Indicate if video feed is enabled.
+  */
   enabled: PropTypes.bool.isRequired,
   isTop: PropTypes.bool,
+  /**
+  * How the video stream should be scaled to fit its
+  * container.
+  */
+  scaleType: PropTypes.oneOf(['fit', 'fill'])
 }
 
 class TwilioVideoPreview extends React.Component {
@@ -32,9 +34,7 @@ class TwilioVideoPreview extends React.Component {
   }
 
   render () {
-    return (
-      <NativeTwilioVideoPreview ref={this.localVideoView} {...this.props} />
-    )
+    return <NativeTwilioVideoPreview ref={this.localVideoView} {...this.props} />
   }
 }
 

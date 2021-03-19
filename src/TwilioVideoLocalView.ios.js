@@ -15,7 +15,12 @@ class TwilioVideoLocalView extends Component {
     /**
      * Indicate if video feed is enabled.
      */
-    enabled: PropTypes.bool.isRequired
+    enabled: PropTypes.bool.isRequired,
+    /**
+     * How the video stream should be scaled to fit its
+     * container.
+     */
+    scaleType: PropTypes.oneOf(['fit', 'fill'])
   }
 
   localVideoView = React.createRef();
@@ -27,11 +32,18 @@ class TwilioVideoLocalView extends Component {
   }
 
   render () {
-    let scalesType = this.props.scaleType === 'fit' ? 1 : 2
-    return <RCTTWLocalVideoView ref={this.localVideoView} scalesType={scalesType} {...this.props}>{this.props.children}</RCTTWLocalVideoView>
+    const scalesType = this.props.scaleType === 'fit' ? 1 : 2
+    return (
+      <RCTTWLocalVideoView ref={this.localVideoView} scalesType={scalesType} {...this.props}>
+        {this.props.children}
+      </RCTTWLocalVideoView>
+    )
   }
 }
 
-const RCTTWLocalVideoView = requireNativeComponent('RCTTWLocalVideoView', TwilioVideoLocalView)
+const RCTTWLocalVideoView = requireNativeComponent(
+  'RCTTWLocalVideoView',
+  TwilioVideoLocalView
+)
 
 module.exports = TwilioVideoLocalView

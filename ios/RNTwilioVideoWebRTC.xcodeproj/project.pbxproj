@@ -277,12 +277,15 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
-					"$(PROJECT_DIR)/../../../mobile/ios/Frameworks/**",
+					"$(PROJECT_DIR)/../../../ios/Frameworks/**",
+					"$(PROJECT_DIR)/../../../ios/Pods/**",
+					"$(PROJECT_DIR)/../../../ios/Carthage/Build/**",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/../../../mobile/ios/Frameworks/TwilioVideo/**",
-					"$(PROJECT_DIR)/../../../mobile/ios/Frameworks/**",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					"${SRCROOT}/../../../ios/Pods/TwilioVideo/TwilioVideo/**",
+					"$(SRCROOT)/../../../ios/Carthage/Build/**",
 				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -298,12 +301,15 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
-					"$(PROJECT_DIR)/../../../mobile/ios/Frameworks/**",
+					"$(PROJECT_DIR)/../../../ios/Frameworks/**",
+					"$(PROJECT_DIR)/../../../ios/Pods/**",
+					"$(PROJECT_DIR)/../../../ios/Carthage/Build/**",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/../../../mobile/ios/Frameworks/TwilioVideo/**",
-					"$(PROJECT_DIR)/../../../mobile/ios/Frameworks/**",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					"${SRCROOT}/../../../ios/Pods/TwilioVideo/TwilioVideo/**",
+					"$(SRCROOT)/../../../ios/Carthage/Build/**",
 				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
