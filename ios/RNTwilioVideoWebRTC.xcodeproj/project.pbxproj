@@ -44,7 +44,7 @@
 		738F9D68203760FF00058972 /* RCTTWVideoModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTTWVideoModule.m; sourceTree = SOURCE_ROOT; };
 		738F9D69203760FF00058972 /* RCTTWLocalVideoViewManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTTWLocalVideoViewManager.h; sourceTree = SOURCE_ROOT; };
 		738F9D6A203760FF00058972 /* RCTTWRemoteVideoViewManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTTWRemoteVideoViewManager.h; sourceTree = SOURCE_ROOT; };
-		73AC89C920377EA700038475 /* TwilioVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TwilioVideo.framework; path = ../../../mobile/ios/Frameworks/TwilioVideo.framework; sourceTree = "<group>"; };
+		73AC89C920377EA700038475 /* TwilioVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = TwilioVideo.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */

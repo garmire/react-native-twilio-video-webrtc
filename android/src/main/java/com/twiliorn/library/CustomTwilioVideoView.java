@@ -96,7 +96,6 @@ import static com.twiliorn.library.CustomTwilioVideoView.Events.ON_PARTICIPANT_C
 import static com.twiliorn.library.CustomTwilioVideoView.Events.ON_PARTICIPANT_DISABLED_AUDIO_TRACK;
 import static com.twiliorn.library.CustomTwilioVideoView.Events.ON_PARTICIPANT_DISABLED_VIDEO_TRACK;
 import static com.twiliorn.library.CustomTwilioVideoView.Events.ON_PARTICIPANT_DISCONNECTED;
-import static com.twiliorn.library.CustomTwilioVideoView.Events.ON_DOMINANT_SPEAKER_CHANGED;
 import static com.twiliorn.library.CustomTwilioVideoView.Events.ON_PARTICIPANT_ENABLED_AUDIO_TRACK;
 import static com.twiliorn.library.CustomTwilioVideoView.Events.ON_PARTICIPANT_ENABLED_VIDEO_TRACK;
 import static com.twiliorn.library.CustomTwilioVideoView.Events.ON_PARTICIPANT_REMOVED_DATA_TRACK;
@@ -123,7 +122,6 @@ public class CustomTwilioVideoView extends View implements LifecycleEventListene
             Events.ON_DISCONNECTED,
             Events.ON_PARTICIPANT_CONNECTED,
             Events.ON_PARTICIPANT_DISCONNECTED,
-            Events.ON_DOMINANT_SPEAKER_CHANGED,
             Events.ON_PARTICIPANT_ADDED_VIDEO_TRACK,
             Events.ON_DATATRACK_MESSAGE_RECEIVED,
             Events.ON_PARTICIPANT_ADDED_DATA_TRACK,
@@ -839,11 +837,6 @@ public class CustomTwilioVideoView extends View implements LifecycleEventListene
             }
 
             @Override
-            public void onDominantSpeakerChanged(Room room, RemoteParticipant participant) {
-                changeDominantSpeaker(room, participant);
-            }
-
-            @Override
             public void onRecordingStarted(Room room) {
             }
 
@@ -908,17 +901,6 @@ public class CustomTwilioVideoView extends View implements LifecycleEventListene
         event.putString("roomSid", room.getSid());
         event.putMap("participant", buildParticipant(participant));
         pushEvent(this, ON_PARTICIPANT_DISCONNECTED, event);
-    }
-
-    /*
-     * Called when dominant speaker changes
-     */
-    private void changeDominantSpeaker(Room room, RemoteParticipant participant) {
-        WritableMap event = new WritableNativeMap();
-        event.putString("roomName", room.getName());
-        event.putString("roomSid", room.getSid());
-        event.putMap("participant", participant != null ? buildParticipant(participant) : new WritableNativeMap());
-        pushEvent(this, ON_DOMINANT_SPEAKER_CHANGED, event);
     }
 
     private void addRemoteDataTrack(RemoteParticipant remoteParticipant, RemoteDataTrack remoteDataTrack) {
