@@ -19,7 +19,7 @@ public class TwilioRemotePreview extends RNVideoViewGroup {
     private static final String TAG = "TwilioRemotePreview";
 
 
-    public TwilioRemotePreview(ThemedReactContext context, String trackSid) {
+    public TwilioRemotePreview(ThemedReactContext context) {
         super(context);
     }
 
